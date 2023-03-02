@@ -1,0 +1,69 @@
+# OverheadCar2D is the recipe described here adapted for Godot 4.
+# http://kidscancode.org/godot_recipes/3.x/2d/car_steering/
+# https://engineeringdotnet.blogspot.com/2010/04/simple-2d-car-physics-in-games.html
+#
+# Extend OverheadCar2D and override _get_input(input: CarInput) to control.
+class_name OverheadCar2D extends CharacterBody2D
+
+
+@export var max_engine_power = 800  # Forward acceleration force.
+@export var max_speed_reverse = 250
+@export var max_steering_degrees = 15  # Amount that front wheel turns, in degrees
+@export var friction = -0.9
+@export var drag = -0.0015
+@export var braking = -450
+@export var slip_speed = 400  # Speed where traction is reduced
+@export var traction_fast = 0.1  # High-speed traction
+@export var traction_slow = 0.7  # Low-speed traction
+@export var wheel_base = 70  # Distance from front to rear wheel
+
+
+class CarInput:
+	var steering := 0.0
+	var acceleration := 0.0
+	var braking := false
+
+
+func _get_input(input: CarInput):
+	pass
+
+
+func _physics_process(delta):	
+	var input = CarInput.new()
+	_get_input(input)
+	input.steering = clamp(input.steering, -1.0, 1.0)
+	input.acceleration = clamp(input.acceleration, -1.0, 1.0)
+	
+	var steer_angle = input.steering * deg_to_rad(max_steering_degrees)
+	var acceleration = Vector2.ZERO
+	if input.acceleration > 0:
+		acceleration = input.acceleration * transform.x * max_engine_power
+	if input.acceleration < 0:
+		acceleration = -input.acceleration * transform.x * braking
+		
+	# Apply friction
+	if velocity.length() < 5:
+		velocity = Vector2.ZERO
+	var friction_force = velocity * friction
+	var drag_force = velocity * velocity.length() * drag
+	if velocity.length() < 100:
+		friction_force *= 3
+	acceleration += drag_force + friction_force
+	
+	# Calculate steering
+	var rear_wheel = position - transform.x * wheel_base / 2.0 + velocity * delta
+	var front_wheel = position + transform.x * wheel_base / 2.0 + velocity.rotated(steer_angle) * delta
+	var new_heading = (front_wheel - rear_wheel).normalized()
+	var traction = traction_slow
+	if velocity.length() > slip_speed:
+		traction = traction_fast
+	var d = new_heading.dot(velocity.normalized())
+	if d > 0:
+		velocity = velocity.lerp(new_heading * velocity.length(), traction)
+	if d < 0:
+		velocity = -new_heading * min(velocity.length(), max_speed_reverse)
+	
+	# Update the physics engine
+	rotation = new_heading.angle()
+	velocity += acceleration * delta
+	move_and_slide()
