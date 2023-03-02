@@ -6,12 +6,12 @@
 class_name OverheadCar2D extends CharacterBody2D
 
 
-@export var max_engine_power = 800  # Forward acceleration force.
+@export var max_engine_power = 1200  # Forward acceleration force.
 @export var max_speed_reverse = 250
 @export var max_steering_degrees = 15  # Amount that front wheel turns, in degrees
-@export var friction = -0.9
-@export var drag = -0.0015
-@export var braking = -450
+@export var friction = 0.9
+@export var drag = 0.0015
+@export var brakes = 4.0
 @export var slip_speed = 400  # Speed where traction is reduced
 @export var traction_fast = 0.1  # High-speed traction
 @export var traction_slow = 0.7  # Low-speed traction
@@ -28,27 +28,26 @@ func _get_input(input: CarInput):
 	pass
 
 
-func _physics_process(delta):	
+func _physics_process(delta):
 	var input = CarInput.new()
 	_get_input(input)
 	input.steering = clamp(input.steering, -1.0, 1.0)
 	input.acceleration = clamp(input.acceleration, -1.0, 1.0)
 	
+	# Base steering wheel angle and acceleration
 	var steer_angle = input.steering * deg_to_rad(max_steering_degrees)
-	var acceleration = Vector2.ZERO
-	if input.acceleration > 0:
-		acceleration = input.acceleration * transform.x * max_engine_power
-	if input.acceleration < 0:
-		acceleration = -input.acceleration * transform.x * braking
-		
+	var acceleration = input.acceleration * transform.x * max_engine_power
+
 	# Apply friction
 	if velocity.length() < 5:
 		velocity = Vector2.ZERO
-	var friction_force = velocity * friction
-	var drag_force = velocity * velocity.length() * drag
+	var friction_force = velocity * -friction
+	var drag_force = velocity * velocity.length() * -drag
 	if velocity.length() < 100:
 		friction_force *= 3
 	acceleration += drag_force + friction_force
+	if input.braking:
+		acceleration += velocity * -brakes
 	
 	# Calculate steering
 	var rear_wheel = position - transform.x * wheel_base / 2.0 + velocity * delta
