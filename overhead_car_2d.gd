@@ -19,9 +19,9 @@ class_name OverheadCar2D extends CharacterBody2D
 
 
 class CarInput:
-	var steering := 0.0
-	var acceleration := 0.0
-	var braking := false
+	var steering := 0.0      # -1.0 (left) to 1.0 (right)
+	var acceleration := 0.0  # -1.0 (reverse) to 1.0 (accelerate)
+	var braking := false     # True if brakes are engaged
 
 
 func _get_input(input: CarInput):
