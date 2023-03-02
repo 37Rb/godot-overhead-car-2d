@@ -36,6 +36,8 @@ func _get_input(input):
 
 There are a bunch of export variables available in the inspector and can be used to control the car dynamics.
 
-## Installtion
+Just like any Godot phsyics body, you'll need to add a sprite and a collision shape as children of the OverheadCar2D so you have something to drive around and crash.
+
+## Installation
 
 The plan is to make it available on the [Godot Asset Library](https://godotengine.org/asset-library/asset) but I ran into an issue getting it to work that way. In the mean time you can just copy the script into your project as a work around.
