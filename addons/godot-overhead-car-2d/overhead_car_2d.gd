@@ -66,19 +66,19 @@ func _physics_process(delta):
 	rotation = new_heading.angle()
 	velocity += acceleration * delta
 	move_and_slide()
-	update_engine_sound(input.acceleration)
+	_do_update_output(input.acceleration)
 
 
-func _update_engine_sound(speed_factor, acceleration_factor):
+func _update_output(speed_factor: float, acceleration_factor: float):
 	pass
 
 
-var highest_measured_speed = 0
+var _highest_measured_speed = 0
 
 
-func update_engine_sound(acceleration):
+func _do_update_output(acceleration):
 	var speed = velocity.length()
-	if speed > highest_measured_speed:
-		highest_measured_speed = speed
-	var speed_factor = speed / highest_measured_speed if highest_measured_speed > 0 else 0
-	_update_engine_sound(speed_factor, abs(acceleration))
+	if speed > _highest_measured_speed:
+		_highest_measured_speed = speed
+	var speed_factor = speed / _highest_measured_speed if _highest_measured_speed > 0 else 0
+	_update_output(speed_factor, abs(acceleration))
