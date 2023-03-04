@@ -24,13 +24,13 @@ class CarInput:
 	var braking := false     # True if brakes are engaged
 
 
-func _get_input(input: CarInput):
+func _provide_input(input: CarInput):
 	pass
 
 
 func _physics_process(delta):
 	var input = CarInput.new()
-	_get_input(input)
+	_provide_input(input)
 	input.steering = clamp(input.steering, -1.0, 1.0)
 	input.acceleration = clamp(input.acceleration, -1.0, 1.0)
 	
@@ -66,3 +66,19 @@ func _physics_process(delta):
 	rotation = new_heading.angle()
 	velocity += acceleration * delta
 	move_and_slide()
+	update_engine_sound(input.acceleration)
+
+
+func _update_engine_sound(speed_factor, acceleration_factor):
+	pass
+
+
+var highest_measured_speed = 0
+
+
+func update_engine_sound(acceleration):
+	var speed = velocity.length()
+	if speed > highest_measured_speed:
+		highest_measured_speed = speed
+	var speed_factor = speed / highest_measured_speed if highest_measured_speed > 0 else 0
+	_update_engine_sound(speed_factor, abs(acceleration))
