@@ -3,8 +3,8 @@ extends EditorPlugin
 
 
 func _enter_tree():
-	pass
+	print("OverheadCar2D plugin enabled")
 
 
 func _exit_tree():
-	pass
+	print("OverheadCar2D plugin disabled")
