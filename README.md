@@ -1,10 +1,10 @@
-# Overhead Car Body 2D for Godot 4
+# 2D Overhead Car Physics for Godot 4
 
-Adds a node type called OverheadCar2D to Godot 4 that implements reasonably good car physics. It's the car solution described [here](http://kidscancode.org/godot_recipes/3.x/2d/car_steering/) and [here](https://engineeringdotnet.blogspot.com/2010/04/simple-2d-car-physics-in-games.html) but adapted for Godot 4 and shared so it can be easily reused. It extends [CharacterBody2D](https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html).
+Adds a node type called OverheadCarBody2D to Godot 4 that implements reasonably good car physics. It's the car solution described [here](http://kidscancode.org/godot_recipes/3.x/2d/car_steering/) and [here](https://engineeringdotnet.blogspot.com/2010/04/simple-2d-car-physics-in-games.html) but adapted for Godot 4 and shared so it can be easily reused. It extends [CharacterBody2D](https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html).
 
-## How To Use It
+## OverheadCarBody2D
 
-OverheadCar2D is [registered as a named class](https://docs.godotengine.org/en/4.0/tutorials/scripting/gdscript/gdscript_basics.html#registering-named-classes) so you can add a new OverheadCar2D node from the Create New Node dialog. You'll need to extend the OverheadCar2D class to use it. Make sure you choose Extend Script not Attach Script.
+OverheadCarBody2D is [registered as a named class](https://docs.godotengine.org/en/4.0/tutorials/scripting/gdscript/gdscript_basics.html#registering-named-classes) so you can create an OverheadCarBody2D node from the Create New Node dialog. You'll need to extend the OverheadCarBody2D class to use it. Make sure you choose Extend Script not Attach Script.
 
 ### The _provide_input Callback
 
@@ -20,7 +20,7 @@ class CarInput:
 Here is an example `_provide_input` that works with a joystick and buttons. Button presses override joystick motion in this example.
 
 ```gdscript
-extends OverheadCar2D
+extends OverheadCarBody2D
 
 func _provide_input(input: CarInput):
 	input.steering = Input.get_axis("axis_left", "axis_right")
@@ -38,7 +38,7 @@ func _provide_input(input: CarInput):
 
 There are a bunch of export variables available in the inspector and can be used to control the car dynamics.
 
-Just like any Godot physics body, you'll need to add a sprite and a collision shape as children of the OverheadCar2D so you have something to drive around and crash.
+Just like any Godot physics body, you'll need to add a sprite and a collision shape as children of the OverheadCarBody2D so you have something to drive around and crash.
 
 ### The _update_output Callback
 
@@ -53,6 +53,12 @@ func _update_output(speed_factor: float, acceleration_factor: float):
 ```
 
 Of course, the normal physics state variables like position and velocity are available if you need more detail but the given speed and acceleration factors are convenient to use as simple multipliers.
+
+## OverheadCarArea2D
+
+OverheadCarArea2D extends Area2D so that you can add friction and drag when a car is in an area. This can be used for things like off-track rough terrain, puddles, oil slicks, speed bumps, etc... that a car can drive through but would impact velocity. Use StaticBody2D or RigidBody2D instead for areas/objects like walls or boudlers that a car can't drive through and would collide with.
+
+Create an OverheadCarArea2D node, add a CollisionShape2D or CollisionPolygon2D child node and set the friction and drag properties on the area. Any OverheadCarBody2D will add those values to it's own friction and drag while the car is in the area.
 
 ## Installation
 

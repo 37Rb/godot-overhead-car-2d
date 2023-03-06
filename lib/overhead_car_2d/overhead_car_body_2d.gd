@@ -1,9 +1,9 @@
-# OverheadCar2D is the recipe described here adapted for Godot 4.
+# OverheadCarBody2D is the recipe described here adapted for Godot 4.
 # http://kidscancode.org/godot_recipes/3.x/2d/car_steering/
 # https://engineeringdotnet.blogspot.com/2010/04/simple-2d-car-physics-in-games.html
 #
-# Extend OverheadCar2D and override _get_input(input: CarInput) to control.
-class_name OverheadCar2D extends CharacterBody2D
+# Extend OverheadCarBody2D and override _get_input(input: CarInput) to control.
+class_name OverheadCarBody2D extends CharacterBody2D
 
 
 @export var max_engine_power = 1200  # Forward acceleration force.
@@ -28,7 +28,7 @@ func _ready():
 	_connect_car_areas(get_tree().root)
 
 
-func _provide_input(input: CarInput):
+func _provide_input(_input: CarInput):
 	pass
 
 
@@ -73,7 +73,7 @@ func _physics_process(delta):
 	_do_update_output(input.acceleration)
 
 
-func _update_output(speed_factor: float, acceleration_factor: float):
+func _update_output(_speed_factor: float, _acceleration_factor: float):
 	pass
 
 

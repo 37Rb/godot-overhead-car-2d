@@ -15,10 +15,10 @@ func _ready():
 
 
 func _on_body_entered(body):
-	if body is OverheadCar2D:
+	if body is OverheadCarBody2D:
 		car_body_entered.emit(body, self)
 
 
 func _on_body_exited(body):
-	if body is OverheadCar2D:
+	if body is OverheadCarBody2D:
 		car_body_exited.emit(body, self)
