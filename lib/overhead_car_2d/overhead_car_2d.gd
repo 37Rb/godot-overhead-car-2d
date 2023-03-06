@@ -24,6 +24,10 @@ class CarInput:
 	var braking := false     # True if brakes are engaged
 
 
+func _ready():
+	_connect_car_areas(get_tree().root)
+
+
 func _provide_input(input: CarInput):
 	pass
 
@@ -82,3 +86,21 @@ func _do_update_output(acceleration):
 		_highest_measured_speed = speed
 	var speed_factor = speed / _highest_measured_speed if _highest_measured_speed > 0 else 0
 	_update_output(speed_factor, abs(acceleration))
+
+
+func _connect_car_areas(node: Node):
+	for child in node.get_children(true):
+		if child is OverheadCarArea2D:
+			child.car_body_entered.connect(_on_overhead_car_area_2d_car_body_entered)
+			child.car_body_exited.connect(_on_overhead_car_area_2d_car_body_exited)
+		_connect_car_areas(child)
+
+
+func _on_overhead_car_area_2d_car_body_entered(_body, area: OverheadCarArea2D):
+	friction += area.friction
+	drag += area.drag
+
+
+func _on_overhead_car_area_2d_car_body_exited(_body, area: OverheadCarArea2D):
+	friction -= area.friction
+	drag -= area.drag
