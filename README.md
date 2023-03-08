@@ -54,6 +54,12 @@ func _update_output(speed_factor: float, acceleration_factor: float):
 
 Of course, the normal physics state variables like position and velocity are available if you need more detail but the given speed and acceleration factors are convenient to use as simple multipliers.
 
+### Using _init and _ready
+
+OverheadCarBody2D sets [motion_mode](https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html#class-characterbody2d-property-motion-mode) to [MOTION_MODE_FLOATING](https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html#enum-characterbody2d-motionmode) in `_init` because "This mode is suitable for top-down games." So the motion_mode value you set in the inspector is irrelevant. If for some reason you want to use MOTION_MODE_GROUNDED then set it explicitly in your subclass's `_init`.
+
+In Godot 4, lifecycle functions such as `_ready` are not called in parent classes unless you explicity call `super()`. Don't forget to call `super()` if you override `_ready` or any other lifecycle functions.
+
 ## OverheadCarArea2D
 
 OverheadCarArea2D extends Area2D so that you can add friction and drag when a car is in an area. This can be used for things like off-track rough terrain, puddles, oil slicks, speed bumps, etc... that a car can drive through but would impact velocity. Use StaticBody2D or RigidBody2D instead for areas/objects like walls or boudlers that a car can't drive through and would collide with.

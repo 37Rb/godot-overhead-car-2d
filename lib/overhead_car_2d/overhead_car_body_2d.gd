@@ -24,8 +24,11 @@ class CarInput:
 	var braking := false     # True if brakes are engaged
 
 
-func _ready():
+func _init():
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+
+
+func _ready():
 	_connect_car_areas(get_tree().root)
 
 
