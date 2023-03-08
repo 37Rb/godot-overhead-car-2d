@@ -25,6 +25,7 @@ class CarInput:
 
 
 func _ready():
+	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	_connect_car_areas(get_tree().root)
 
 
