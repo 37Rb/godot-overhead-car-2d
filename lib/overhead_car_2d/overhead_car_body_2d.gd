@@ -24,6 +24,10 @@ class CarInput:
 	var braking := false     # True if brakes are engaged
 
 
+var _car_input := CarInput.new()
+var _path_follow: OverheadCarPathFollow2D = null
+
+
 func _init():
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 
@@ -37,14 +41,16 @@ func _provide_input(_input: CarInput):
 
 
 func _physics_process(delta):
-	var input = CarInput.new()
-	_provide_input(input)
-	input.steering = clamp(input.steering, -1.0, 1.0)
-	input.acceleration = clamp(input.acceleration, -1.0, 1.0)
+	if _path_follow:
+		_path_follow.provide_input(self)
+	else:
+		_provide_input(_car_input)
+	_car_input.steering = clamp(_car_input.steering, -1.0, 1.0)
+	_car_input.acceleration = clamp(_car_input.acceleration, -1.0, 1.0)
 	
 	# Base steering wheel angle and acceleration
-	var steer_angle = input.steering * deg_to_rad(max_steering_degrees)
-	var acceleration = input.acceleration * transform.x * max_engine_power
+	var steer_angle = _car_input.steering * deg_to_rad(max_steering_degrees)
+	var acceleration = _car_input.acceleration * transform.x * max_engine_power
 
 	# Apply friction
 	if velocity.length() < 5:
@@ -54,7 +60,7 @@ func _physics_process(delta):
 	if velocity.length() < 100:
 		friction_force *= 3
 	acceleration += drag_force + friction_force
-	if input.braking:
+	if _car_input.braking:
 		acceleration += velocity * -brakes
 	
 	# Calculate steering
@@ -74,7 +80,7 @@ func _physics_process(delta):
 	rotation = new_heading.angle()
 	velocity += acceleration * delta
 	move_and_slide()
-	_do_update_output(input.acceleration)
+	_do_update_output(_car_input.acceleration)
 
 
 func _update_output(_speed_factor: float, _acceleration_factor: float):
@@ -108,3 +114,7 @@ func _on_overhead_car_area_2d_car_body_entered(_body, area: OverheadCarArea2D):
 func _on_overhead_car_area_2d_car_body_exited(_body, area: OverheadCarArea2D):
 	friction -= area.friction
 	drag -= area.drag
+
+
+func _on_overhead_car_path_follow_2d_path_follow_ready(follow: OverheadCarPathFollow2D):
+	_path_follow = follow
