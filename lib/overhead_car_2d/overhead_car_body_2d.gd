@@ -16,6 +16,7 @@ class_name OverheadCarBody2D extends CharacterBody2D
 @export var traction_fast = 0.1  # High-speed traction
 @export var traction_slow = 0.7  # Low-speed traction
 @export var wheel_base = 70  # Distance from front to rear wheel
+@export var paused := false
 
 
 class CarInput:
@@ -41,6 +42,9 @@ func _provide_input(_input: CarInput):
 
 
 func _physics_process(delta):
+	if paused:
+		return
+
 	if _path_follow:
 		_path_follow.provide_input(self)
 	else:
@@ -118,3 +122,7 @@ func _on_overhead_car_area_2d_car_body_exited(_body, area: OverheadCarArea2D):
 
 func follow_path(path_follow: OverheadCarPathFollow2D):
 	_path_follow = path_follow
+
+
+func is_following_path():
+	return _path_follow != null
