@@ -72,6 +72,8 @@ OverheadCarPathFollow2D makes an OverheadCarBody2D automatically follow a [Path2
 
 Add a Path2D to the scene and [draw the curve](https://docs.godotengine.org/en/stable/tutorials/math/beziers_and_curves.html) you want the car to follow. Create an OverheadCarPathFollow2D node as a child of the Path2D node. Connect the `path_follow_ready` signal from the OverheadCarPathFollow2D to the `follow_path` function on the OverheadCarBody2D. Now the car will get it's input from the OverheadCarPathFollow2D instead of calling the `_provide_input` callback. It will drive on the path automatically.
 
+Use the `Min Target Distance` property to control how far ahead (in pixels) OverheadCarPathFollow2D should look on the path to find it's steering target.
+
 _Make sure your Path2D is a child of the main scene or a static node. If it's a child of a moving Node2D then the path will move with it's parent which is probably not what you want. Also make sure your Path2D does not have any transformations applied that you didn't intend. If you scale or rotate the path then the car will follow the transformed path instead of the one you drew._
 
 ## Installation
