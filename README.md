@@ -62,10 +62,18 @@ In Godot 4, lifecycle functions such as `_ready` are not called in parent classe
 
 ## OverheadCarArea2D
 
-OverheadCarArea2D extends Area2D so that you can add friction and drag when a car is in an area. This can be used for things like off-track rough terrain, puddles, oil slicks, speed bumps, etc... that a car can drive through but would impact velocity. Use StaticBody2D or RigidBody2D instead for areas/objects like walls or boudlers that a car can't drive through and would collide with.
+OverheadCarArea2D extends Area2D so that you can add friction and drag when a car is in an area. It can be used for things like off-track rough terrain, puddles, oil slicks, speed bumps, etc... that a car can drive through but would impact velocity. Use StaticBody2D or RigidBody2D instead for areas/objects like walls or boudlers that a car can't drive through and would collide with.
 
 Create an OverheadCarArea2D node, add a CollisionShape2D or CollisionPolygon2D child node and set the friction and drag properties on the area. Any OverheadCarBody2D will add those values to it's own friction and drag while the car is in the area.
 
+## OverheadCarPathFollow2D
+
+OverheadCarPathFollow2D makes an OverheadCarBody2D automatically follow a [Path2D](https://docs.godotengine.org/en/stable/classes/class_path2d.html). It can be used to make an OverheadCarBody2D into a non-playable character such as a car that the player is racing against. We use this instead of [PathFollow2D](https://docs.godotengine.org/en/stable/classes/class_pathfollow2d.html) because PathFollow2D doesn't obey OverheadCarBody2D physics.
+
+Add a Path2D to the scene and [draw the curve](https://docs.godotengine.org/en/stable/tutorials/math/beziers_and_curves.html) you want the car to follow. Create an OverheadCarPathFollow2D node as a child of the Path2D node. Connect the `path_follow_ready` signal from the OverheadCarPathFollow2D to the `follow_path` function on the OverheadCarBody2D. Now the car will get it's input from the OverheadCarPathFollow2D instead of calling the `_provide_input` callback. It will drive on the path automatically.
+
+_Make sure your Path2D is a child of the main scene or a static node. If it's a child of a moving Node2D then the path will move with it's parent which is probably not what you want. Also make sure your Path2D does not have any transformations applied that you didn't intend. If you scale or rotate the path then the car will follow the transformed path instead of the one you drew._
+
 ## Installation
 
-The plan is to make it available on the [Godot Asset Library](https://godotengine.org/asset-library/asset) but I ran into an issue getting it to work that way. In the mean time you can just copy the script into your project as a work around.
+Install from the [Godot Asset Library](https://godotengine.org/asset-library/asset/1717).

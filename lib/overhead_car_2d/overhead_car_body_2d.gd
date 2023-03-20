@@ -116,5 +116,5 @@ func _on_overhead_car_area_2d_car_body_exited(_body, area: OverheadCarArea2D):
 	drag -= area.drag
 
 
-func _on_overhead_car_path_follow_2d_path_follow_ready(follow: OverheadCarPathFollow2D):
-	_path_follow = follow
+func follow_path(path_follow: OverheadCarPathFollow2D):
+	_path_follow = path_follow
