@@ -46,6 +46,8 @@ func _physics_process(delta):
 		return
 
 	if _path_follow:
+		_path_follow.follow_path(self)
+	if _path_follow and _path_follow.active_driver:
 		_path_follow.provide_input(self)
 	else:
 		_provide_input(_car_input)
@@ -126,3 +128,7 @@ func follow_path(path_follow: OverheadCarPathFollow2D):
 
 func is_following_path():
 	return _path_follow != null
+
+
+func is_autonomous():
+	return _path_follow && _path_follow.active_driver

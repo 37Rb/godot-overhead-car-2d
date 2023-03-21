@@ -1,6 +1,7 @@
 class_name OverheadCarPathFollow2D extends Node
 
 
+@export var active_driver := true
 @export var min_target_distance := 500
 
 
@@ -20,19 +21,20 @@ func _ready():
 	path_follow_ready.emit(self)
 
 
-func provide_input(car: OverheadCarBody2D):
-	var input := car._car_input
-	input.acceleration = 1.0
-	
+func follow_path(car: OverheadCarBody2D):
 	var target: Vector2 = path_points[path_index]
 	while car.position.distance_to(target) < min_target_distance:
 		path_index = wrapi(path_index + 1, 0, path_points.size())
 		target = path_points[path_index]
-	
+
+
+func provide_input(car: OverheadCarBody2D):
+	var input := car._car_input
+	input.acceleration = 1.0
+	var target: Vector2 = path_points[path_index]
 	var target_vector := target - car.position
 	var target_angle := normalize_angle(target_vector.angle())
 	var normal_rotation = normalize_angle(car.rotation)
-	
 	var steering_angle = angle_difference(normal_rotation, target_angle)
 	input.steering = steering_angle / deg_to_rad(car.max_steering_degrees)
 
@@ -46,3 +48,7 @@ func normalize_angle(angle: float) -> float:
 
 func angle_difference(from: float, to: float) -> float:
 	return fposmod(to - from + PI, PI*2) - PI
+
+
+func progress() -> float:
+	return path_index / path.curve.get_baked_length()
